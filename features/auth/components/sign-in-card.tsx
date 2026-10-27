@@ -13,25 +13,55 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useRouter } from "next/navigation";
 
 interface SignInCardProps {
     setState: (state: SignInFlow) => void;
 }
 
 export const SignInCard = ({ setState }: SignInCardProps) => {
+    const { signIn } = useAuthActions();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [pending, setPending] = useState(false);
 
-    const handleOAuthSignIn = (value: "github" | "google") => {
+    const router = useRouter();
+
+    const handleOAuthSignIn = async (value: "github" | "google") => {
         setPending(true);
+        setError("");
+
+        try {
+            await signIn(value);
+            router.replace("/");
+            router.refresh();
+        } catch {
+            setError(`Failed To Sign In With ${value}. Please Try Again.`);
+            setPending(false);
+        }
     };
 
-    const handleSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setPending(true);
         setError("");
+
+        try {
+            await signIn("password", {
+                email,
+                password,
+                flow: "signIn",
+            });
+
+            router.replace("/");
+            router.refresh();
+        } catch {
+            setError("Invalid Email Or Password!");
+        } finally {
+            setPending(false);
+        }
     };
 
     return (

@@ -13,12 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { useAuthActions } from "@convex-dev/auth/react";
 
 interface SignUpCardProps {
     setState: (state: SignInFlow) => void;
 }
 
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
+    const { signIn } = useAuthActions();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -28,6 +30,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
 
     const handleOAuthSignUp = (value: "github" | "google") => {
         setPending(true);
+        signIn(value).finally(() => setPending(false));
     };
 
     const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
@@ -55,6 +58,11 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
 
         setPending(true);
         setError("");
+        signIn("password", { name, email, password, flow: "signUp" })
+            .catch(() => {
+                setError("Something Went Wrong!");
+            })
+            .finally(() => setPending(false));
     };
 
     return (

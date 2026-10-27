@@ -1,7 +1,8 @@
+import { WorkspaceId } from "@/features/workspaces/id";
 import React from "react";
 
 const WorkspaceIdPage = () => {
-    return <div>WorkspaceIdPage</div>;
+    return <WorkspaceId />;
 };
 
 export default WorkspaceIdPage;

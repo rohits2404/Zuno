@@ -31,7 +31,7 @@ export const create = mutation({
         if (!userId) throw new Error("Unauthorized.");
 
         if (args.name.length < 3 || args.name.length > 20)
-            throw new Error("Invalid workspace name.");
+            throw new Error("Invalid Workspace Name.");
 
         const joinCode = generateCode();
 
@@ -42,5 +42,16 @@ export const create = mutation({
         });
 
         return workspaceId;
+    },
+});
+
+export const getById = query({
+    args: { id: v.id("workspaces") },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx);
+
+        if (!userId) return null;
+
+        return await ctx.db.get(args.id);
     },
 });

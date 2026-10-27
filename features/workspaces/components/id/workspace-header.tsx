@@ -13,6 +13,7 @@ import { Doc } from "@/convex/_generated/dataModel";
 import { ChevronDown, ListFilter, SquarePen } from "lucide-react";
 import { useState } from "react";
 import { PreferencesModal } from "./preferences-modal";
+import { InviteModal } from "./invite-modal";
 
 interface WorkspaceHeaderProps {
     workspace: Doc<"workspaces">;
@@ -32,6 +33,12 @@ export const WorkspaceHeader = ({
                 open={preferencesOpen}
                 setOpen={setPreferencesOpen}
                 initialValue={workspace.name}
+            />
+            <InviteModal
+                open={inviteOpen}
+                setOpen={setInviteOpen}
+                name={workspace.name}
+                joinCode={workspace.joinCode}
             />
             <div className="flex h-12.25 items-center justify-between gap-0.5 px-4">
                 <DropdownMenu>

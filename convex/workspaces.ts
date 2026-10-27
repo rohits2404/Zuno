@@ -68,6 +68,11 @@ export const create = mutation({
             role: "admin",
         });
 
+        await ctx.db.insert("channels", {
+            name: "general",
+            workspaceId,
+        });
+
         return workspaceId;
     },
 });
@@ -111,9 +116,15 @@ export const remove = mutation({
         if (!member || member.role !== "admin")
             throw new Error("Unauthorized.");
 
-        const [members] = await Promise.all([
+        const [members, channels] = await Promise.all([
             ctx.db
                 .query("members")
+                .withIndex("by_workspace_id", (q) =>
+                    q.eq("workspaceId", args.id),
+                )
+                .collect(),
+            ctx.db
+                .query("channels")
                 .withIndex("by_workspace_id", (q) =>
                     q.eq("workspaceId", args.id),
                 )
@@ -121,6 +132,7 @@ export const remove = mutation({
         ]);
 
         for (const member of members) await ctx.db.delete(member._id);
+        for (const channel of channels) await ctx.db.delete(channel._id);
 
         await ctx.db.delete(args.id);
 

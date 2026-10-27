@@ -12,8 +12,10 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
     return (
         <div className="h-full">
             <Toolbar />
+
             <div className="flex h-[calc(100vh-40px)]">
                 <Sidebar />
+
                 <ResizablePanelGroup orientation="horizontal">
                     <ResizablePanel
                         id="sidebar"
@@ -30,7 +32,6 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
                         {children}
                     </ResizablePanel>
                 </ResizablePanelGroup>
-                {children}
             </div>
         </div>
     );

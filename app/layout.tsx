@@ -4,6 +4,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
+import { JotaiProvider } from "@/components/jotai-provider";
+import { ModalProvider } from "@/components/modal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,8 +25,12 @@ export default function RootLayout({
             <html lang="en">
                 <body className={`${inter.className} antialiased`}>
                     <ConvexClientProvider>
-                        <Toaster theme="light" richColors closeButton />
-                        {children}
+                        <JotaiProvider>
+                            <Toaster theme="light" richColors closeButton />
+                            <ModalProvider />
+
+                            {children}
+                        </JotaiProvider>
                     </ConvexClientProvider>
                 </body>
             </html>

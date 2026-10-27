@@ -1,6 +1,8 @@
 "use client";
 
 import { Id } from "@/convex/_generated/dataModel";
+import { useCreateMessage } from "@/features/messages/api/use-create-message";
+import { useGenerateUploadUrl } from "@/features/upload/api/use-generate-upload-url";
 import { useChannelId } from "@/hooks/use-channel-id";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { Loader } from "lucide-react";
@@ -38,6 +40,9 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
     const workspaceId = useWorkspaceId();
     const channelId = useChannelId();
 
+    const { mutate: createMessage } = useCreateMessage();
+    const { mutate: generateUploadUrl } = useGenerateUploadUrl();
+
     const handleSubmit = async ({
         body,
         image,
@@ -46,6 +51,42 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
         image: File | null;
     }) => {
         try {
+            setIsPending(true);
+            innerRef.current?.enable(false);
+
+            const values: CreateMessageValues = {
+                channelId,
+                workspaceId,
+                body,
+                image: undefined,
+            };
+
+            if (image) {
+                const url = await generateUploadUrl(
+                    {},
+                    {
+                        throwError: true,
+                    },
+                );
+
+                if (!url) throw new Error("URL Not Found.");
+
+                const result = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-type": image.type },
+                    body: image,
+                });
+
+                if (!result.ok) throw new Error("Failed To Upload Image.");
+
+                const { storageId } = await result.json();
+
+                values.image = storageId;
+            }
+
+            await createMessage(values, { throwError: true });
+
+            setEditorKey((prevKey) => prevKey + 1);
         } catch (error) {
             toast.error("Failed To Send Message.");
         } finally {

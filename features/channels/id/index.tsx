@@ -1,17 +1,20 @@
 "use client";
 
+import { MessageList } from "@/components/message-list";
 import { useGetChannel } from "@/features/channels/api/use-get-channel";
 import { ChatInput } from "@/features/channels/components/chat-input";
 import { Header } from "@/features/channels/components/header";
+import { useGetMessages } from "@/features/messages/api/use-get-messages";
 import { useChannelId } from "@/hooks/use-channel-id";
 import { Loader, TriangleAlert } from "lucide-react";
-import React from "react";
 
 export const ChannelId = () => {
     const channelId = useChannelId();
     const { data: channel, isLoading: channelLoading } = useGetChannel({
         id: channelId,
     });
+
+    const { results, status, loadMore } = useGetMessages({ channelId });
 
     if (channelLoading || status == "LoadingFirstPage") {
         return (
@@ -35,7 +38,15 @@ export const ChannelId = () => {
     return (
         <div className="flex h-full flex-col">
             <Header channelName={channel.name} />
-            <div className="flex-1" />
+            <MessageList
+                channelName={channel.name}
+                channelCreationTime={channel._creationTime}
+                data={results}
+                loadMore={loadMore}
+                isLoadingMore={status === "LoadingMore"}
+                canLoadMore={status === "CanLoadMore"}
+            />
+
             <ChatInput placeholder={`Message # ${channel.name}`} />
         </div>
     );

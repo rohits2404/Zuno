@@ -20,22 +20,22 @@ import type * as users from "../users.js";
 import type * as workspaces from "../workspaces.js";
 
 import type {
-    ApiFromModules,
-    FilterApi,
-    FunctionReference,
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-    auth: typeof auth;
-    channels: typeof channels;
-    conversations: typeof conversations;
-    http: typeof http;
-    members: typeof members;
-    messages: typeof messages;
-    reactions: typeof reactions;
-    upload: typeof upload;
-    users: typeof users;
-    workspaces: typeof workspaces;
+  auth: typeof auth;
+  channels: typeof channels;
+  conversations: typeof conversations;
+  http: typeof http;
+  members: typeof members;
+  messages: typeof messages;
+  reactions: typeof reactions;
+  upload: typeof upload;
+  users: typeof users;
+  workspaces: typeof workspaces;
 }>;
 
 /**
@@ -47,8 +47,8 @@ declare const fullApi: ApiFromModules<{
  * ```
  */
 export declare const api: FilterApi<
-    typeof fullApi,
-    FunctionReference<any, "public">
+  typeof fullApi,
+  FunctionReference<any, "public">
 >;
 
 /**
@@ -60,8 +60,8 @@ export declare const api: FilterApi<
  * ```
  */
 export declare const internal: FilterApi<
-    typeof fullApi,
-    FunctionReference<any, "internal">
+  typeof fullApi,
+  FunctionReference<any, "internal">
 >;
 
 export declare const components: {};
